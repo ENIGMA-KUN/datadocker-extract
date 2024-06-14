@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: job_scraper_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: job_scraper
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jobnet
+
+  scrapy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: job_scraper_scrapy
+    volumes:
+      - .:/app
+    networks:
+      - jobnet
+    depends_on:
+      - postgres
+
+networks:
+  jobnet:
+
+volumes:
+  postgres_data:
